@@ -1,0 +1,52 @@
+OleDbConnection konekcija;
+        OleDbCommand komanda;
+        OleDbDataAdapter adapter;
+        DataTable tabelGabradovi;
+        int br = 0;
+        public FrmGradovi()
+        {
+            InitializeComponent();
+            string putanja = Environment.CurrentDirectory;
+            string[] putanjaBaze = putanja.Split(new string[] { "bin" }, StringSplitOptions.None);
+            AppDomain.CurrentDomain.SetData("DataDirectory", putanjaBaze[0]);
+            konekcija = new OleDbConnection(@"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=|DataDirectory|\B5FudbKlubovi.accdb");
+        }
+
+        private void FrmGradovi_Load(object sender, EventArgs e)
+        {
+            konekcija.Open();
+            komanda = new OleDbCommand("SELECT * FROM Grad", konekcija);
+            adapter = new OleDbDataAdapter(komanda);
+            tabelGabradovi = new DataTable();
+            br=adapter.Fill(tabelGabradovi);
+            konekcija.Close();
+            tbSifra.Text = tabelGabradovi.Rows[0]["GradID"].ToString();
+            tbGrad.Text = tabelGabradovi.Rows[0]["Grad"].ToString();
+            if(tabelGabradovi.Rows[0]["PozivniBroj"].ToString()=="0")
+            {
+                tbPozivniBroj.Text = "";
+            }
+            else
+            {
+                tbPozivniBroj.Text = tabelGabradovi.Rows[0]["PozivniBroj"].ToString();
+            }
+
+            if(tabelGabradovi.Rows[0]["PostanskiBroj"].ToString()=="0")
+            {
+                tbPostanskiBroj.Text = "";
+            }
+            else
+            {
+                tbPostanskiBroj.Text = tabelGabradovi.Rows[0]["PostanskiBroj"].ToString();
+            }
+
+            if(tabelGabradovi.Rows[0]["BrojStanovnika"].ToString()=="0")
+            {
+                tbBrojStanovnika.Text = "";
+            }
+            else
+            {
+                tbBrojStanovnika.Text = tabelGabradovi.Rows[0]["BrojStanovnika"].ToString();
+            }
+            
+        }

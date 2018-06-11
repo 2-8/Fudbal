@@ -1,0 +1,45 @@
+private void prethodni_Click(object sender, EventArgs e)
+        {
+            int i=0;
+            bool ima = false;
+            if (tbSifra.Text != "")
+            {
+
+
+                int ind;
+                try
+                {
+                    ind = Int32.Parse(tbSifra.Text);
+                }
+                catch
+                {
+                    MessageBox.Show("Nepravilna sifra!", "Obavestenje!");
+                    tbSifra.Text = "";
+                    return;
+                }
+                
+                for (; i < br; i++)
+                {
+                    if (Int32.Parse(tabela.Rows[i]["StadionID"].ToString()) == ind)
+                    {
+                        ima = true;
+                        break;
+                    }
+                }
+                
+            }
+            else
+            {
+                i = 1;
+                ima = true;
+            }
+            if(i>0 && ima)
+            {
+                tbSifra.Text = tabela.Rows[i-1]["StadionID"].ToString();
+                tbNaziv.Text = tabela.Rows[i-1]["Naziv"].ToString();
+                tbAdresa.Text = tabela.Rows[i-1]["Adresa"].ToString();
+                tbKapacitet.Text = tabela.Rows[i-1]["Kapacitet"].ToString();
+                tbBrUlaza.Text = tabela.Rows[i-1]["BrojUlaza"].ToString();
+                cbGrad.Text = tabela.Rows[i-1]["Grad"].ToString();
+            }
+        }

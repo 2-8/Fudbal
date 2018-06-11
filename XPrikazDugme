@@ -1,0 +1,28 @@
+private void prikaz_Click(object sender, EventArgs e)
+        {
+            string Kapacitet;
+            Kapacitet = textBox1.Text;
+            
+            konekcija.Open();
+
+
+            OleDbCommand komanda = new OleDbCommand("SELECT Stadion.Naziv, Stadion.BrojUlaza,Stadion.Kapacitet, Klub.NazivKluba, Klub.Sajt FROM Stadion INNER JOIN Klub ON Stadion.StadionID = Klub.StadionID WHERE Stadion.Kapacitet > ? ORDER BY Stadion.Kapacitet ASC, Stadion.BrojUlaza DESC; ", konekcija);
+
+            komanda.Parameters.Add("?", OleDbType.BSTR).Value = textBox1.Text;
+
+            OleDbDataReader riderSve = komanda.ExecuteReader();
+            int brojac = 0;
+            while (riderSve.Read())
+            {
+                dataGridView1.Rows.Add(riderSve[0], riderSve[1], riderSve[2],riderSve[3], riderSve[4]);
+                brojac++;
+            }
+
+            if (brojac == 0)
+            {
+                MessageBox.Show("Nisu pronadjeni podaci za ovaj upit", "Upozorenje");
+            }
+
+
+            konekcija.Close();
+        }

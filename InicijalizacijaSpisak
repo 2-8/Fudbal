@@ -1,0 +1,23 @@
+OleDbConnection konekcija;
+        OleDbCommand komanda;
+        OleDbDataReader r;
+        public FrmSpisak()
+        {
+            InitializeComponent();
+            string putanja = Environment.CurrentDirectory;
+            string[] putanjaBaze = putanja.Split(new string[] { "bin" }, StringSplitOptions.None);
+            AppDomain.CurrentDomain.SetData("DataDirectory", putanjaBaze[0]);
+            konekcija = new OleDbConnection(@"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=|DataDirectory|\B5FudbKlubovi.accdb");
+        }
+
+        private void FrmSpisak_Load(object sender, EventArgs e)
+        {
+            konekcija.Open();
+            OleDbCommand komandaGrad = new OleDbCommand("SELECT Grad FROM Grad order by Grad ASC", konekcija);
+            OleDbDataReader riderGrad = komandaGrad.ExecuteReader();
+            while (riderGrad.Read())
+            {
+                comboBox1.Items.Add(riderGrad[0]);
+            }
+            konekcija.Close();
+        }

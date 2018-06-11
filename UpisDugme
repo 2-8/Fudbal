@@ -1,0 +1,107 @@
+private void upis_Click(object sender, EventArgs e)
+        {
+            if(tbSifra.Text=="" || tbGrad.Text=="")
+            {
+                MessageBox.Show("Sifra i grad su obavezna polja!");
+                tbSifra.Focus();
+                return;
+            }
+            else
+            {
+
+                komanda = new OleDbCommand("insert into Grad (GradID,Grad,PozivniBroj,PostanskiBroj,BrojStanovnika) values (@GradID, @Grad, @Pozivni, @Post, @Stan)",konekcija);
+                komanda.Parameters.AddWithValue("@GradID", Int32.Parse(tbSifra.Text));
+                komanda.Parameters.AddWithValue("@Grad", tbGrad.Text);
+
+
+                if(tbPozivniBroj.Text!="")
+                {
+                    try
+                {
+                    if(Int32.Parse(tbPozivniBroj.Text)>0)
+                        komanda.Parameters.AddWithValue("@Pozivni", Int32.Parse(tbPozivniBroj.Text));
+                    else
+                    {
+                        throw new Exception();
+                    }
+                }
+                catch
+                {
+                    MessageBox.Show("Nepravilan pozivni broj!","Obavestenje!");
+                    tbPozivniBroj.Text="";
+                    tbPozivniBroj.Focus();
+                    return;
+                }
+                
+                }
+                else
+                    komanda.Parameters.AddWithValue("@Pozivni", DBNull.Value);
+
+
+                if(tbPostanskiBroj.Text!="")
+                {
+                    try
+                {
+                    if(Int32.Parse(tbPostanskiBroj.Text)>0)
+                        komanda.Parameters.AddWithValue("@Post", Int32.Parse(tbPostanskiBroj.Text));
+                    else
+                    {
+                        throw new Exception();
+                    }
+                }
+                catch
+                {
+                    MessageBox.Show("Nepravilan postanski broj!","Obavestenje!");
+                    tbPostanskiBroj.Text="";
+                    tbPostanskiBroj.Focus();
+                    return;
+                }
+                
+                }
+                else
+                    komanda.Parameters.AddWithValue("@Post", DBNull.Value);
+
+
+                if (tbBrojStanovnika.Text != "")
+                {
+                    try
+                    {
+                        if (Int32.Parse(tbBrojStanovnika.Text) > 0)
+                            komanda.Parameters.AddWithValue("@Stan", Int32.Parse(tbBrojStanovnika.Text));
+                        else
+                        {
+                            throw new Exception();
+                        }
+                    }
+                    catch
+                    {
+                        MessageBox.Show("Nepravilan broj stanovnika!", "Obavestenje!");
+                        tbBrojStanovnika.Text = "";
+                        tbBrojStanovnika.Focus();
+                        return;
+                    }
+
+                }
+                else
+                    komanda.Parameters.AddWithValue("@Stan", DBNull.Value);
+                konekcija.Open();
+                try
+                {
+                    komanda.ExecuteNonQuery();
+                    MessageBox.Show("Uspesan upis!", "Obavestenje!");
+                    tbSifra.Text = "";
+                    tbPozivniBroj.Text = "";
+                    tbPostanskiBroj.Text = "";
+                    tbGrad.Text = "";
+                    tbBrojStanovnika.Text = "";
+                }
+                catch
+                {
+                    MessageBox.Show("Doslo je do greske pri upisu!", "Obavestenje!");
+                }
+                finally
+                {
+                    konekcija.Close();
+                }
+            }
+        }

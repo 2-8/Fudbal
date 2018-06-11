@@ -1,0 +1,8 @@
+        private void novi_Click(object sender, EventArgs e)
+        {
+            tbAdresa.Text = tbSifra.Text = tbNaziv.Text = tbKapacitet.Text = tbBrUlaza.Text = "";
+            cbGrad.Text = "";
+            tbSifra.Focus();
+            prethodni.Enabled = false;
+            sledeci.Enabled = false;
+        }

@@ -1,0 +1,63 @@
+private void prethodni_Click(object sender, EventArgs e)
+        {
+            int i=0;
+            bool ima = false;
+            if (tbSifra.Text == "")
+            {
+                i = 1;
+                ima = true;
+            }
+            else
+            {
+                int ind;
+                try
+                {
+                    ind = Int32.Parse(tbSifra.Text);
+                }
+                catch
+                {
+                    MessageBox.Show("Nepravilna sifra!", "Obavestenje!");
+                    tbSifra.Text = "";
+                    return;
+                }
+                for (; i < br; i++)
+                {
+                    if (Int32.Parse(tabelGabradovi.Rows[i]["GradID"].ToString()) == ind)
+                    {
+                        ima = true;
+                        break;
+                    }
+                }
+            }
+            if (i > 0 && ima)
+            {
+                tbSifra.Text = tabelGabradovi.Rows[i - 1]["GradID"].ToString();
+                tbGrad.Text = tabelGabradovi.Rows[i - 1]["Grad"].ToString();
+                if (tabelGabradovi.Rows[i - 1]["PozivniBroj"].ToString() == "0")
+                {
+                    tbPozivniBroj.Text = "";
+                }
+                else
+                {
+                    tbPozivniBroj.Text = tabelGabradovi.Rows[i - 1]["PozivniBroj"].ToString();
+                }
+
+                if (tabelGabradovi.Rows[i - 1]["PostanskiBroj"].ToString() == "0")
+                {
+                    tbPostanskiBroj.Text = "";
+                }
+                else
+                {
+                    tbPostanskiBroj.Text = tabelGabradovi.Rows[i - 1]["PostanskiBroj"].ToString();
+                }
+
+                if (tabelGabradovi.Rows[i - 1]["BrojStanovnika"].ToString() == "0")
+                {
+                    tbBrojStanovnika.Text = "";
+                }
+                else
+                {
+                    tbBrojStanovnika.Text = tabelGabradovi.Rows[i - 1]["BrojStanovnika"].ToString();
+                }
+            }
+        }

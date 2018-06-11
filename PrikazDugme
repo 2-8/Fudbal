@@ -1,0 +1,36 @@
+private void prikaz_Click(object sender, EventArgs e)
+        {
+            string pozicija, grad;
+            pozicija = textBox1.Text;
+            grad = comboBox1.SelectedItem.ToString();
+            konekcija.Open();
+            string sqlSelect = "SELECT Igrac.Ime, Igrac.Prezime, KLUB.NazivKluba ";
+            string sqlJoin1 = " FROM (((Igrac INNER JOIN Grad ON Igrac.GradID=Grad.GradID) ";
+            string sqlJoin2 = " INNER JOIN Pozicija_Igraca ON Igrac.PozicijaID=Pozicija_Igraca.PozicijaID)";
+            string sqlJoin3 = " INNER JOIN KLUB ON Igrac.KlubID=KLUB.KlubID) ";
+            string sqlWhere = " WHERE Grad.Grad= ? and Pozicija_Igraca.Naziv = ? ";
+            string sqlOrder = " ORDER BY Igrac.Ime, Igrac.Prezime, KLUB.NazivKluba DESC;";
+
+            string sqlQuery = sqlSelect + sqlJoin1 + sqlJoin2 + sqlJoin3 + sqlWhere + sqlOrder;
+
+            OleDbCommand komandaSelect = new OleDbCommand(sqlQuery, konekcija);
+
+            komandaSelect.Parameters.Add("?", OleDbType.BSTR).Value = comboBox1.Text;
+            komandaSelect.Parameters.Add("?", OleDbType.BSTR).Value = textBox1.Text;
+
+            OleDbDataReader riderSve = komandaSelect.ExecuteReader();
+            int brojac = 0;
+            while (riderSve.Read())
+            {
+                dataGridView1.Rows.Add(riderSve[0], riderSve[1], riderSve[2]);
+                brojac++;
+            }
+
+            if (brojac == 0)
+            {
+                MessageBox.Show("Nisu pronadjeni podaci za ovaj upit", "Upozorenje");
+            }
+
+
+            konekcija.Close();
+        }

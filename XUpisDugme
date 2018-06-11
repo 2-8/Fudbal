@@ -1,0 +1,106 @@
+private void upis_Click(object sender, EventArgs e)
+        {
+            int SID;
+            if (tbSifra.Text != "" && tbNaziv.Text != "" && cbGrad.Text != "")
+            {
+                try
+                {
+                    SID = Int32.Parse(tbSifra.Text);
+                }
+                catch
+                {
+                    MessageBox.Show("Sifra mora biti broj!", "Greska!");
+                    tbSifra.Text = "";
+                    return;
+                }
+                if (SID <= 0)
+                {
+                    MessageBox.Show("Sifra mora biti veca od nula!", "Greska!");
+                    tbSifra.Text = "";
+                    return;
+                }
+                else
+                {
+                    komanda = new OleDbCommand("SELECT StadionID FROM Stadion WHERE StadionID=" + SID, konekcija);
+                    konekcija.Open();
+                    rider = komanda.ExecuteReader();
+                    if (rider.HasRows)
+                    {
+                        MessageBox.Show("Stadion sa ovom sifrom vec postoji u bazi!", "Greska!");
+                        tbSifra.Focus();
+                        tbSifra.Text = "";
+                        konekcija.Close();
+                        return;
+                    }
+                    konekcija.Close();
+                    komanda.CommandText = "SELECT GradID FROM Grad WHERE Grad='" + cbGrad.Text + "';";
+                    konekcija.Open();
+                    rider = komanda.ExecuteReader();
+                    int gID = 0;
+
+                    if (!rider.HasRows)
+                    {
+                        MessageBox.Show("Ovaj grad ne postoji u bazi!", "Greska!");
+                        cbGrad.Text = "";
+                        return;
+                    }
+                    else
+                    {
+                        rider.Read();
+                        gID = Int32.Parse(rider[0].ToString());
+
+                    }
+                    konekcija.Close();
+
+                    komanda.CommandText = "INSERT INTO Stadion (StadionID, Naziv, Adresa, Kapacitet, BrojUlaza, GradID) values (@StadionID, @Naziv, @Adresa, @Kapacitet, @BrojUlaza, @GradID)";
+                    komanda.Parameters.Add("@StadionID", OleDbType.Integer).Value = SID;
+                    komanda.Parameters.Add("@Naziv", OleDbType.VarChar).Value = tbNaziv.Text;
+                    if (tbAdresa.Text == "")
+                        komanda.Parameters.Add("@Adresa", OleDbType.VarChar).Value = DBNull.Value;
+                    else
+                        komanda.Parameters.Add("@Adresa", OleDbType.VarChar).Value = tbAdresa.Text;
+
+                    if (tbKapacitet.Text == "")
+                        komanda.Parameters.Add("@Kapacitet", OleDbType.Integer).Value = DBNull.Value;
+                    else if (Int32.Parse(tbKapacitet.Text)>0)
+                        komanda.Parameters.Add("@Kapacitet", OleDbType.Integer).Value = Int32.Parse(tbKapacitet.Text);
+                    else
+                    {
+                        MessageBox.Show("Kapacitet mora biti veci od 0!", "Obavestenje!");
+                        tbKapacitet.Text="";
+                        tbKapacitet.Focus();
+                        return;
+                    }
+                    if (tbBrUlaza.Text == "")
+                        komanda.Parameters.Add("@BrojUlaza", OleDbType.Integer).Value = DBNull.Value;
+                    else if (Int32.Parse(tbBrUlaza.Text) > 0)
+                        komanda.Parameters.Add("@BrojUlaza", OleDbType.Integer).Value = Int32.Parse(tbBrUlaza.Text);
+                    else
+                    {
+                        MessageBox.Show("Broj ulaza mora biti veci od 0!", "Obavestenje!");
+                        tbBrUlaza.Text = "";
+                        tbBrUlaza.Focus();
+                        return;
+                    }
+                    komanda.Parameters.Add("@GradID", OleDbType.Integer).Value = gID;
+                    konekcija.Open();
+                    try
+                    {
+                        komanda.ExecuteNonQuery();
+                        MessageBox.Show("Uspesan upis!", "Obavestenje!");
+                    }
+                    catch
+                    {
+                        MessageBox.Show("Doslo je do greske pri upisivanju u bazu!", "Greska!");
+                        konekcija.Close();
+                    }
+                    konekcija.Close();
+
+
+                }
+            }
+            else
+            {
+                MessageBox.Show("Popunite sva obavezna polja: Sifra, Naziv, Grad!", "Obavestenje!");
+            }
+        }
